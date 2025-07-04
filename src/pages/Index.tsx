@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Download } from 'lucide-react';
+import { Download, Image } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,9 +9,11 @@ import { useToast } from "@/hooks/use-toast";
 import Navigation from '@/components/Navigation';
 import FeatureCard from '@/components/FeatureCard';
 import DownloadCenter from '@/components/DownloadCenter';
+import Gallery from '@/components/Gallery';
 
 const Index = () => {
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState<'downloader' | 'history'>('downloader');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
@@ -29,8 +31,38 @@ const Index = () => {
           </p>
         </div>
 
-        {/* Download Center */}
+        {/* Tab Navigation */}
+        <div className="flex justify-center mb-8">
+          <div className="bg-white/10 backdrop-blur-lg rounded-lg p-1 border border-white/20">
+            <Button
+              variant={activeTab === 'downloader' ? 'default' : 'ghost'}
+              onClick={() => setActiveTab('downloader')}
+              className={`mr-1 ${activeTab === 'downloader' 
+                ? 'bg-white text-purple-900' 
+                : 'text-white hover:bg-white/20'}`}
+            >
+              <Download className="w-4 h-4 mr-2" />
+              Downloader
+            </Button>
+            <Button
+              variant={activeTab === 'history' ? 'default' : 'ghost'}
+              onClick={() => setActiveTab('history')}
+              className={`${activeTab === 'history' 
+                ? 'bg-white text-purple-900' 
+                : 'text-white hover:bg-white/20'}`}
+            >
+              <Image className="w-4 h-4 mr-2" />
+              History
+            </Button>
+          </div>
+        </div>
+
+        {/* Content */}
+        {activeTab === 'downloader' ? (
         <DownloadCenter />
+        ) : (
+          <Gallery />
+        )}
 
         {/* Features Section */}
         <div className="grid md:grid-cols-3 gap-8 mt-16">

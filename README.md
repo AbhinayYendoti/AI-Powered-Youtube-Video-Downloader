@@ -1,73 +1,255 @@
-# Welcome to your Lovable project
+# YouTube Video Downloader
 
-## Project info
+A full-stack web application that allows users to download YouTube videos by providing the video URL. The application features a Spring Boot REST API backend and a modern React frontend interface.
 
-**URL**: https://lovable.dev/projects/588de450-06e8-44b5-8a70-e294c4df5758
+## Features
 
-## How can I edit this code?
+- 🎥 **High Quality Downloads**: Support for multiple video qualities (1080p, 720p, 480p, 360p)
+- 🎵 **Audio Extraction**: Convert videos to MP3 audio files
+- ⚡ **Fast & Free**: No registration required, completely free to use
+- 🔄 **Real-time Progress**: Live download progress tracking
+- 📱 **Responsive Design**: Works on desktop and mobile devices
+- 🛡️ **Secure**: Input validation and security measures
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+### Backend
+- **Spring Boot 3.2.0** - Java 17+
+- **H2 Database** - In-memory database for development
+- **yt-dlp** - Python library for video downloading
+- **Maven** - Build tool
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/588de450-06e8-44b5-8a70-e294c4df5758) and start prompting.
+### Frontend
+- **React 18** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **Tailwind CSS** - Styling
+- **shadcn/ui** - UI components
+- **Axios** - HTTP client
+- **React Query** - Data fetching
 
-Changes made via Lovable will be committed automatically to this repo.
+## Prerequisites
 
-**Use your preferred IDE**
+Before running this application, make sure you have the following installed:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Java 17 or higher**
+- **Node.js 16+ and npm**
+- **Python 3.7+** (for yt-dlp)
+- **yt-dlp** installed globally
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Installing yt-dlp
 
-Follow these steps:
+```bash
+# Using pip
+pip install yt-dlp
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Or using pipx (recommended)
+pipx install yt-dlp
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Verify installation
+yt-dlp --version
+```
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Installation & Setup
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### 1. Clone the Repository
+
+```bash
+git clone <repository-url>
+cd clip-caster-web
+```
+
+### 2. Backend Setup
+
+```bash
+# Navigate to backend directory
+cd backend
+
+# Build the project
+mvn clean install
+
+# Run the Spring Boot application
+mvn spring-boot:run
+```
+
+The backend will start on `http://localhost:8095`
+
+### 3. Frontend Setup
+
+```bash
+# Navigate back to root directory
+cd ..
+
+# Install dependencies
+npm install
+
+# Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The frontend will start on `http://localhost:5173`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Usage
 
-**Use GitHub Codespaces**
+1. **Open the Application**: Navigate to `http://localhost:5173` in your browser
+2. **Paste YouTube URL**: Enter a valid YouTube video URL
+3. **Select Format**: Choose between video (MP4) or audio (MP3)
+4. **Choose Quality**: Select your preferred quality/bitrate
+5. **Start Download**: Click the download button and wait for processing
+6. **Download File**: The file will automatically download when ready
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## API Endpoints
 
-## What technologies are used for this project?
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/videos/info` | Get video information |
+| POST | `/api/download` | Start video download |
+| GET | `/api/download/status` | Get download progress |
+| GET | `/api/download` | Download completed file |
+| DELETE | `/api/download/{filename}` | Delete downloaded file |
+| GET | `/api/health` | Health check |
 
-This project is built with:
+## Project Structure
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+clip-caster-web/
+├── backend/                          # Spring Boot backend
+│   ├── src/main/java/com/example/downloader/
+│   │   ├── controller/               # REST controllers
+│   │   ├── service/                  # Business logic
+│   │   ├── model/                    # Data models
+│   │   ├── dto/                      # Data transfer objects
+│   │   ├── config/                   # Configuration
+│   │   └── exception/                # Custom exceptions
+│   ├── src/main/resources/
+│   │   ├── application.yml           # Application config
+│   │   └── static/downloads/         # Download directory
+│   └── pom.xml                       # Maven dependencies
+├── src/                              # React frontend
+│   ├── components/                   # React components
+│   ├── pages/                        # Page components
+│   ├── hooks/                        # Custom hooks
+│   └── lib/                          # Utilities
+├── package.json                      # Frontend dependencies
+└── README.md                         # This file
+```
 
-## How can I deploy this project?
+## Configuration
 
-Simply open [Lovable](https://lovable.dev/projects/588de450-06e8-44b5-8a70-e294c4df5758) and click on Share -> Publish.
+### Backend Configuration
 
-## Can I connect a custom domain to my Lovable project?
+The backend configuration is in `backend/src/main/resources/application.yml`:
 
-Yes, you can!
+```yaml
+server:
+  port: 8095
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+app:
+  download:
+    directory: downloads/
+    max-file-size: 500MB
+    yt-dlp:
+      command: yt-dlp
+      timeout: 300000
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Frontend Configuration
+
+The frontend connects to the backend API at `http://localhost:8095`. You can modify the API base URL in the components if needed.
+
+## Development
+
+### Backend Development
+
+```bash
+cd backend
+
+# Run with hot reload
+mvn spring-boot:run
+
+# Run tests
+mvn test
+
+# Build JAR
+mvn clean package
+```
+
+### Frontend Development
+
+```bash
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+
+# Run linting
+npm run lint
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **yt-dlp not found**
+   - Ensure yt-dlp is installed: `pip install yt-dlp`
+   - Verify it's in your PATH: `yt-dlp --version`
+
+2. **CORS Issues**
+   - The backend is configured to allow requests from `localhost:5173`
+   - Check that the frontend is running on the correct port
+
+3. **Download Failures**
+   - Check that the YouTube URL is valid and accessible
+   - Ensure you have sufficient disk space
+   - Check the backend logs for detailed error messages
+
+4. **Port Already in Use**
+   - Change the backend port in `application.yml`
+   - Update the frontend API calls accordingly
+
+### Logs
+
+- **Backend logs**: Check the console output when running `mvn spring-boot:run`
+- **Frontend logs**: Check the browser developer console
+
+## Security Considerations
+
+- Input validation for YouTube URLs
+- File size limits to prevent abuse
+- Directory traversal protection
+- CORS configuration for production
+- File cleanup after downloads
+
+## Legal Compliance
+
+**Important**: This application is for educational purposes. Please ensure compliance with:
+
+- YouTube's Terms of Service
+- Copyright laws
+- Content creators' rights
+
+Only download content you own or have permission to download.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+This project is for educational purposes. Please respect all applicable laws and terms of service.
+
+## Support
+
+For issues and questions:
+1. Check the troubleshooting section
+2. Review the logs for error messages
+3. Ensure all prerequisites are installed
+4. Verify the configuration is correct

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # YouTube Video Downloader
 
 A full-stack web application that allows users to download YouTube videos by providing the video URL. The application features a Spring Boot REST API backend and a modern React frontend interface.
@@ -253,3 +254,6 @@ For issues and questions:
 2. Review the logs for error messages
 3. Ensure all prerequisites are installed
 4. Verify the configuration is correct
+=======
+# Youtube-Video-Downloader
+>>>>>>> 171e2f1edfca20676143ff844dd8ec2dcc16ad98

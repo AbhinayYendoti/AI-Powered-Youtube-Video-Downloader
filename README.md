@@ -1,10 +1,10 @@
-# ClipCaster Pro - Enhanced YouTube Video Downloader
+# AI-Powered YouTube Video Downloader
 
-A professional-grade YouTube video downloader with AI-powered content analysis, built with React, Spring Boot, and Google Gemini Pro integration.
+A modern YouTube video downloader with AI-powered content analysis, built with React, Flask, and Google Gemini Pro integration.
 
-![ClipCaster Pro](https://img.shields.io/badge/ClipCaster-Pro-blue)
+![AI YouTube Downloader](https://img.shields.io/badge/AI-YouTube%20Downloader-blue)
 ![React](https://img.shields.io/badge/React-18.2.0-blue)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.0+-green)
+![Flask](https://img.shields.io/badge/Flask-3.0+-green)
 ![Gemini Pro](https://img.shields.io/badge/Gemini%20Pro-AI-orange)
 
 ## ✨ Features
@@ -48,7 +48,7 @@ A professional-grade YouTube video downloader with AI-powered content analysis, 
 
 ### Prerequisites
 - Node.js 18+ and npm/yarn
-- Java 17+ and Maven
+- Python 3.8+ and pip
 - FFmpeg (for audio processing)
 - yt-dlp (for video downloading)
 
@@ -69,28 +69,33 @@ npm run build
 # Navigate to backend directory
 cd backend
 
-# Install dependencies
-mvn clean install
+# Create virtual environment
+python -m venv venv
 
-# Start the application
-mvn spring-boot:run
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Start the Flask application
+python app.py
 ```
 
 ### Environment Configuration
-Create `backend/src/main/resources/application.yml`:
-```yaml
-app:
-  ai:
-    enabled: true
-    gemini:
-      api-key: YOUR_GEMINI_API_KEY
-      base-url: https://generativelanguage.googleapis.com/v1beta
-      model: models/gemini-1.5-pro
-      max-tokens: 4000
-      temperature: 0.7
-    rate-limit:
-      requests-per-minute: 60
-      requests-per-hour: 1000
+Create `backend/config.py`:
+```python
+import os
+
+class Config:
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-secret-key-here'
+    GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY') or 'your-gemini-api-key'
+    DOWNLOAD_FOLDER = 'downloads'
+    TEMP_FOLDER = 'temp_downloads'
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
 ```
 
 ## 🏗️ Architecture
@@ -103,19 +108,18 @@ app:
 - **React Query**: Server state management and caching
 - **React Router**: Client-side routing
 
-### Backend (Spring Boot)
-- **Spring Boot 3**: Latest Spring framework with Java 17
-- **Spring Web**: RESTful API endpoints
-- **Spring Data JPA**: Database integration with H2
-- **Spring Security**: API security and rate limiting
+### Backend (Flask)
+- **Flask 3.0+**: Lightweight and flexible Python web framework
+- **Flask-CORS**: Cross-origin resource sharing support
+- **yt-dlp**: Advanced YouTube video downloading
 - **Async Processing**: Non-blocking video processing
-- **Caching**: Redis-like caching for analysis results
+- **File Management**: Secure file serving and cleanup
 
 ### External Integrations
 - **yt-dlp**: Advanced YouTube video downloading
 - **FFmpeg**: Professional audio/video processing
 - **Gemini Pro API**: AI-powered content analysis
-- **H2 Database**: Lightweight embedded database
+- **Python venv**: Virtual environment management
 
 ## 📱 User Interface
 
@@ -140,74 +144,48 @@ app:
 ## 🔧 Configuration
 
 ### Video Quality Settings
-```yaml
-app:
-  video:
-    quality:
-      max-resolution: 4K
-      supported-formats:
-        - mp4
-        - webm
-        - mkv
-      codec-preference:
-        - h.264
-        - h.265
-        - vp9
-        - av1
+```python
+# Supported video formats and codecs
+SUPPORTED_FORMATS = ['mp4', 'webm', 'mkv']
+SUPPORTED_CODECS = ['h.264', 'h.265', 'vp9', 'av1']
+MAX_RESOLUTION = '4K'
 ```
 
 ### Audio Processing
-```yaml
-app:
-  audio:
-    processing:
-      enabled: true
-      max-file-size: 500MB
-      supported-formats:
-        - mp3
-        - m4a
-        - wav
-        - flac
-        - ogg
-        - aac
-      default-bitrate: 256
-      normalization:
-        enabled: true
-        target-level: -16
-        true-peak: -1.5
-        loudness-range: 11
+```python
+# Audio processing configuration
+AUDIO_FORMATS = ['mp3', 'm4a', 'wav', 'flac', 'ogg', 'aac']
+DEFAULT_BITRATE = 256
+MAX_FILE_SIZE = 500 * 1024 * 1024  # 500MB
 ```
 
 ### AI Analysis Configuration
-```yaml
-app:
-  ai:
-    enabled: true
-    gemini:
-      api-key: YOUR_API_KEY
-      model: models/gemini-1.5-pro
-      max-tokens: 4000
-      temperature: 0.7
-    rate-limit:
-      requests-per-minute: 60
-      requests-per-hour: 1000
+```python
+# Gemini Pro API configuration
+GEMINI_MODEL = 'models/gemini-1.5-pro'
+MAX_TOKENS = 4000
+TEMPERATURE = 0.7
+RATE_LIMIT_PER_MINUTE = 60
+RATE_LIMIT_PER_HOUR = 1000
 ```
 
 ## 🛠️ Development
 
 ### Project Structure
 ```
-clip-caster-web/
+Youtube-Video-Downloader/
 ├── src/                    # Frontend source code
 │   ├── components/         # React components
 │   ├── pages/             # Page components
 │   ├── hooks/             # Custom React hooks
 │   ├── lib/               # Utility functions
 │   └── ui/                # UI components
-├── backend/               # Spring Boot application
-│   ├── src/main/java/     # Java source code
-│   ├── src/main/resources/ # Configuration files
-│   └── pom.xml           # Maven dependencies
+├── backend/               # Flask application
+│   ├── app.py            # Main Flask application
+│   ├── config.py         # Configuration settings
+│   ├── requirements.txt  # Python dependencies
+│   ├── downloads/        # Downloaded files
+│   └── temp_downloads/   # Temporary files
 └── README.md             # This file
 ```
 
@@ -240,12 +218,15 @@ vercel --prod
 
 ### Backend Deployment
 ```bash
-# Build JAR file
-mvn clean package
+# Install production dependencies
+pip install -r requirements.txt
+
+# Run with Gunicorn (production)
+gunicorn -w 4 -b 0.0.0.0:5000 app:app
 
 # Run with Docker
-docker build -t clipcaster-pro .
-docker run -p 8095:8095 clipcaster-pro
+docker build -t youtube-downloader .
+docker run -p 5000:5000 youtube-downloader
 ```
 
 ## 📊 Performance
@@ -290,9 +271,9 @@ docker run -p 8095:8095 clipcaster-pro
 
 ### Code Standards
 - **Frontend**: ESLint + Prettier configuration
-- **Backend**: Checkstyle + SpotBugs integration
-- **Testing**: Jest (frontend) + JUnit (backend)
-- **Documentation**: JSDoc + JavaDoc comments
+- **Backend**: PEP 8 style guide
+- **Testing**: Jest (frontend) + pytest (backend)
+- **Documentation**: JSDoc + Python docstrings
 
 ## 📄 License
 
@@ -309,12 +290,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For support and questions:
-- **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
-- **Documentation**: [Wiki](https://github.com/your-repo/wiki)
-- **Discussions**: [GitHub Discussions](https://github.com/your-repo/discussions)
+- **Issues**: [GitHub Issues](https://github.com/AbhinayYendoti/AI-Powered-Youtube-Video-Downloader/issues)
+- **Documentation**: [Wiki](https://github.com/AbhinayYendoti/AI-Powered-Youtube-Video-Downloader/wiki)
+- **Discussions**: [GitHub Discussions](https://github.com/AbhinayYendoti/AI-Powered-Youtube-Video-Downloader/discussions)
 
 ---
 
-**ClipCaster Pro** - Professional YouTube video downloading and AI analysis platform.
-"# AI-Powered-Youtube-Video-Downloader" 
-"# AI-Powered-Youtube-Video-Downloader" 
+**AI-Powered YouTube Video Downloader** - Professional YouTube video downloading and AI analysis platform. 
